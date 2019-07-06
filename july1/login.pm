@@ -1,4 +1,4 @@
-package login;e
+package login;
 
 sub new {
    my $class = shift;
