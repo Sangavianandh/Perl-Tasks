@@ -1,0 +1,36 @@
+<playlist>
+  <product id="1">
+    <title>Product</title>
+    <director>Sony Mobile</director>
+    <release-date>1995-06-30</release-date>
+    <mpaa-rating>4</mpaa-rating>
+    <running> good</running>
+    <genre>adventure</genre>
+    <genre>drama</genre>
+    <booked_person>
+      <person name="sangavi" place="chennai" />
+      <person name="anu" role="hydrabad" />
+      <person name="boopathi" role="indonesia" />
+      <person name="Gowri" place="usa" />
+    </booked_person>
+    <imdb-info url="http://www.imdb.com/title/tt0112384/"/>
+  </product>
+  <product id="2">
+    <title>Product1</title>
+    <director>Samsung Mobile</director>
+    <release-date>1999-06-30</release-date>
+    <mpaa-rating>5</mpaa-rating>
+    <running> Excellent</running>
+    <genre>adventure</genre>
+    <genre>drama</genre>
+    <booked_person>
+      <person name="gowri" place="chennai" />
+      <person name="niranjana" role="hydrabad" />
+      <person name="gnana anu rekha" role="indonesia" />
+      <person name="sangavi anandhasamy" place="usa" />
+    </booked_person>
+    <imdb-info url="http://www.imdb.com/title/tt0112384/"/>
+  </product>
+</playlist>
+
+
