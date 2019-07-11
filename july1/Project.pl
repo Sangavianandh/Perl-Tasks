@@ -14,15 +14,16 @@ my $dsn = "DBI:$driver:database=$database:host=$hostname";
 my $userid = "root";
 my $password = "mysql";
 my $dbh = DBI->connect($dsn, $userid, $password ) or die $DBI::errstr;
-my ($email,$mobile,$input,$subject,$message,$msg,$choice,$object);
+my ($father_name,$address,$mother_name,$mobile,$sex,$email,$citizen_no,$input);
+print "           **********Welcome to phone Book**********       ";
+print "                            Menu\n";
+print "       1.Add New            2.List           3.Exit      \n";
+print "       4.Modify             5.Search         6.Delete     \n"; 
 
-
-print "Enter your choice\n 1.Login\n 2.Register\n";
 $input=<STDIN>;
 chomp($input);
 
 #Login
-
   if($input==1)
    {
      print "login your account\n";
