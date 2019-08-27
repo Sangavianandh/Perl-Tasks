@@ -175,7 +175,7 @@ exit;
   }
  #Booking
  Book:
- print color("cyan"),"1.Book\t\t2.Reschudule\t\t3.Cancel\t\t4.Search\t\t5.Logout\n",color("reset");
+ print color("cyan"),"1.Book\t\t2.Reschudule\t\t3.Cancel\t\t4.Search\t\t5.View Bookings\t\t6.Logout\n",color("reset");
  $type=<STDIN>;
  chomp($type);
 choose:
@@ -440,10 +440,10 @@ choose:
          }
        Decide:
        print color("yellow"),"Do you want to continue Booking?\n",color("reset");
-       print color("yellow"),"y or Y to contineue booking\n",color("reset");
-       print color("yellow"),"N or n to stop\n",color("reset");
+       print color("yellow"),"'b' or 'B' to Back from booking\n",color("reset");
+       print color("yellow"),"'N' or 'n' to stop\n",color("reset");
        my $result=<STDIN>;
-       if($result=~/[Y]/i)
+       if($result=~/[B]/i)
          {
           goto Book;
          }
@@ -657,14 +657,14 @@ choose:
          }
        Decide:
        print color("yellow"),"Do you want to continue Booking?\n",color("reset");
-       print color("yellow"),"y or Y to contineue booking\n",color("reset");
-       print color("yellow"),"N or n to stop\n",color("reset");
+       print color("yellow"),"'b' or 'B' to Back from booking\n",color("reset");
+       print color("yellow"),"'N' or 'n' to stop\n",color("reset");
        my $result=<STDIN>;
-       if($result=~/[Y]/i)
+       if($result=~/[B]/i)
          {
           goto Book;
          }
-        elsif($result=~/[N]i/)
+        elsif($result=~/[N]/i)
           {
             exit;
           }
@@ -739,32 +739,27 @@ $view_Details=Ticket_Cancellation->Ticket_Cancel($id);
 #Search
 elsif($type==4)
 {
+search:
    my $viewall=Ticket_Rescheduling->ViewAll($id);
 if($viewall ne "null")
+{
+print color("blue"),"1.Search by name\t\t2.Search by mobile number\n",color("reset");
+my $choice=<STDIN>;
+if($choice==1)
 {
      Name1:
      print color("green"),"Enter Name\n",color("reset");
      $passenger_First_Name=<STDIN>;
      chomp($passenger_First_Name);
-     $name_error_checking=RegisterValidation->NameValidation($passenger_First_Name);
+     $name_error_checking=RegisterValidation->NameValidation($choice);
      if($name_error_checking eq "false")
        {
         $error1=$FlightBook::error{'4'};
         print color("red"),"$error1\n",color("reset");
         goto Name1;
        } 
-     Mobile_number1:
-     print color("green"),"Enter Mobile Number\n",color("reset");
-     $mobile_Number=<STDIN>;
-     chomp($mobile_Number);
-     $mobile_num_error_checking=RegisterValidation->MobileValidation($mobile_Number);
-     if($mobile_num_error_checking eq "false")
-       {
-        $error1=$FlightBook::error{'6'};
-        print color("red"),"$error1\n",color("reset");
-        goto Mobile_number1;
-       }
-      $view_Details=Ticket_Rescheduling->Search($id,$passenger_First_Name,$mobile_Number);
+     $mobile_Number="null";
+     $view_Details=Ticket_Rescheduling->Search($id,$passenger_First_Name,$mobile_Number,$choice);
        if($view_Details eq "not available")
          {
            $error1=$FlightBook::error{'22'};
@@ -782,18 +777,67 @@ if($viewall ne "null")
           goto Book;
          }
 }
-else
-{
- $error1=$FlightBook::error{'22'};
+elsif($choice==2)
+   {
+     Mobile_number1:
+     print color("cyan"),"Enter Mobile Number\n",color("reset");
+     $mobile_Number=<STDIN>;
+     chomp($mobile_Number);
+     $passenger_First_Name="null";
+      $view_Details=Ticket_Rescheduling->Search($id,$passenger_First_Name,$mobile_Number,$choice);
+       if($view_Details eq "not available")
+         {
+           $error1=$FlightBook::error{'22'};
            print color("red"),"$error1\n",color("reset");
            goto Book;
+         }
+       if($view_Details eq "No Booking")
+         {
+           $error1=$FlightBook::error{'21'};
+           print color("red"),"$error1\n",color("reset");
+           goto Book;
+         }
+       else
+         {
+          goto Book;
+         }
+  }
+else
+  {
+   print color("red"),"Please enter the correct choice\n",color("reset");
+   goto search;
+  }
 }
+else
+ {
+    $error1=$FlightBook::error{'22'};
+    print color("red"),"$error1\n",color("reset");
+    goto Book;
+ }
 }
 
 #logout
 elsif($type==5)
     {
-     exit;
-    }
-
+     my $viewall=Ticket_Rescheduling->ViewAll($id);
+     if($viewall eq "null")
+       {
+          $error1=$FlightBook::error{'22'};
+           print color("red"),"$error1\n",color("reset");
+           goto Book;
+      }
+      else
+      {
+       goto Book;
+      }
+    } 
+elsif($type==6)
+{
+exit;
+}
+else
+{
+print color("red"),"Invaild choice\nPlease enter the correct choice\n",color("reset");
+goto Book;
+}
 

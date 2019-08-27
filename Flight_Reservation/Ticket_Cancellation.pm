@@ -30,7 +30,7 @@ sub Ticket_Cancel
 # getting Passenger details fron ID
  eval
  {
-  $sth1=$dbh->prepare("select * from Passenger_Details where Login_ID=?");
+  $sth1=$FlightBook::self->{select_All_ID};
   $sth1->execute($id);
  };
  if($@)
@@ -58,7 +58,7 @@ print "$tb",color("reset");
       print color("green"),"Enter the ID\n",color("reset"),;
       $ID_=<STDIN>;
       chomp($ID_);
-      $sth1=$dbh->prepare("select Flight_ID,Flight_Name,Travel_Date,Starting_Place,Destination_Place,Arraival_Time,Departure_Time from Passenger_Details where ID=?");
+      $sth1=$FlightBook::self->{select_Particular_ID};
       $sth1->execute($ID_);
       $count=0;
 
@@ -82,7 +82,7 @@ print "$tb",color("reset");
   #getting Id,seat availability from Flight_Detais table reference with Travel_Place_Info table
      eval
        {
-         $sth1=$dbh->prepare("select ID, Seat_Availability from Flight_Details where Flight_ID=? and Flight_Name=? and Travel_Date=? and Satrting_Time=? and Destination_Time=? and Travel_Place_ID in (select Travel_Place_ID from Travel_Place_Info where Boarding_From =? and Landing_To=?) ");
+         $sth1=$FlightBook::self->{select_Details_ID};
          $sth1->execute($Flight_ID1,$Flight_Name1,$travel_Date1,$Starting_Time1,$Destination_Time1, $boarding_from1,$landing_to1);
       };
       if($@)
@@ -107,7 +107,7 @@ print "$tb",color("reset");
      #cancel the ticket by deleting the Passenger_Details
      eval
       {
-     $sth1=$dbh->prepare("Delete from Passenger_Details where ID=?");
+     $sth1=$FlightBook::self->{Cancel_Ticket};
      $sth1->execute($ID_);
       };
      if($@)

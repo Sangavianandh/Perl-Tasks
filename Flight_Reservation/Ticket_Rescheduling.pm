@@ -27,7 +27,7 @@ sub Reschedule
    #getting the passenger details by using Login_ID
    eval
    {
-    $sth1=$dbh->prepare("select * from Passenger_Details where Login_ID=?");
+    $sth1=$FlightBook::self->{select_All_ID};
     $sth1->execute($id);
    };
   if($@)
@@ -55,7 +55,7 @@ print "$tb",color("reset");
       print color("green"),"Enter the ID\n",color("reset");
       $ID_=<STDIN>;
       chomp($ID_);
-     $sth1=$dbh->prepare("select Flight_ID,Flight_Name,Travel_Date,Starting_Place,Destination_Place,Arraival_Time,Departure_Time,First_Name,Last_Name,Mobile_Number from Passenger_Details where ID=?");
+     $sth1=$FlightBook::self->{Reschedule};
      $sth1->execute($ID_);
       $count=0;
 
@@ -65,20 +65,20 @@ print "$tb",color("reset");
             $passenger_First_name1=$passenger_First_name;
             $passenger_Last_name1=$passenger_Last_name;
             $passenger_mobile_Number1=$passenger_mobile_Number;
-           $Flight_ID1=$Flight_ID;
-           $Flight_Name1=$Flight_Name;
-           $travel_Date1=$travel_Date;
-           $boarding_from1=$boarding_from;
-           $landing_to1=$landing_to;
-           $Starting_Time1=$Starting_Time;
-           $Destination_Time1=$Destination_Time;
-           $count++;   
+            $Flight_ID1=$Flight_ID;
+            $Flight_Name1=$Flight_Name;
+            $travel_Date1=$travel_Date;
+            $boarding_from1=$boarding_from;
+            $landing_to1=$landing_to;
+            $Starting_Time1=$Starting_Time;
+            $Destination_Time1=$Destination_Time;
+            $count++;   
           }
   
      #selecting Id and seat_Availability from flight_Details for updation 
       eval
       {
-     $sth3=$dbh->prepare("select ID, Seat_Availability from Flight_Details where Flight_ID=? and Flight_Name=? and Travel_Date=? and Satrting_Time=? and Destination_Time=? and Travel_Place_ID in (select Travel_Place_ID from Travel_Place_Info where Boarding_From =? and Landing_To=?) ");
+     $sth3=$FlightBook::self->{Reschedule1};
      $sth3->execute($Flight_ID1,$Flight_Name1,$travel_Date1,$Starting_Time1,$Destination_Time1,$boarding_from1,$landing_to1);
       };
       if($@)
@@ -182,7 +182,7 @@ print "$tb",color("reset");
       # selectingthe updation details
       eval
        {
-         $sth2=$dbh->prepare("select Id,Seat_Availability,Flight_Name,Arraival_Time,Departure_Time from Flight_Availability where Flight_ID=?");
+         $sth2=$FlightBook::self->{Reschedule2};
          $sth2->execute($Flight_ID1);
        };
       if($@)
@@ -199,7 +199,7 @@ print "$tb",color("reset");
          }
       #checking the booking status
 $count5=0;
- $sth1=$dbh->prepare("select * from Passenger_Details where Travel_Date=? and Starting_Place=? and Destination_Place=? and First_Name=? and Last_Name=? and Mobile_Number=?");
+ $sth1=$FlightBook::self->{Reschedule3};
 $sth1->execute($passenger_Date_Of_Journey,$boarding_from,$landing_to,$passenger_First_name1,$passenger_Last_name1,$passenger_mobile_Number1);
      while($sth1->fetch)
        {
@@ -260,7 +260,7 @@ $id=shift;
 #displaying all the Passenger_Details of given Login_ID
 eval
  {
-  $sth1=$dbh->prepare("select * from Passenger_Details where Login_ID=?");
+  $sth1=$FlightBook::self->{select_All_ID};
   $sth1->execute($id);
  };
  if($@)
@@ -298,19 +298,23 @@ sub Search
  $id=shift;
  $name=shift;
  $mobile_Number=shift;
+ my $choice=shift;
 eval
   {
-   $sth4=$dbh->prepare("select * from Passenger_Details where Login_ID=? and First_Name like '%$name%' and Mobile_Number=?");
-  $sth4->execute($id,$mobile_Number);
+   $sth4=$FlightBook::self->{select_All_ID};
+  $sth4->execute($id);
  };
 if($@)
    {
     return "Error";
    }
+
+if($choice==1)
+{
 eval
   {
-   $sth5=$dbh->prepare("select * from Passenger_Details where Login_ID=? and First_Name like '%$name%' and Mobile_Number=?");
-  $sth5->execute($id,$mobile_Number);
+   $sth5=$dbh->prepare("select * from Passenger_Details where Login_ID=? and First_Name like '%$name%'");
+  $sth5->execute($id);
  };
 if($@)
    {
@@ -340,5 +344,44 @@ else
 { 
 return "not available";
 }
+}
+
+elsif($choice==2)
+{
+eval
+  {
+   $sth5=$dbh->prepare("select * from Passenger_Details where Login_ID=? and Mobile_Number like '%$mobile_Number%'");
+  $sth5->execute($id);
+ };
+if($@)
+   {
+    return "Error";
+   }
+my $count3=0;
+ while($sth4->fetch)
+         { 
+$count3++;
+         }
+if($count3==0)
+{
+return"not available";
+}
+if($count3>0)
+{
+$tb2 = Text::Table->new(color("on_yellow"),"ID","Flight_ID","Flight_Name","Travel_Date","From","To", "Arraival_Time","Departure_Time","First_Name","Last_Name","Age","Gender","Mobile_Number","Email",color("reset"));
+while(($Login_ID,$Flight_ID,$Flight_Name,$travel_Date, $boarding_from,$landing_to,$Starting_Time,$Destination_Time,$passenger_First_name,$passenger_Last_name,$passenger_age,$gender,$passenger_mobile_Number,$passenger_email,$ID) = $sth5->fetchrow_array())
+         { 
+          $tb2->add(color("on_Black"),$id,"$Flight_ID","$Flight_Name","$travel_Date","$boarding_from",   "$landing_to","$Starting_Time","$Destination_Time","$passenger_First_name","$passenger_Last_name","$passenger_age","$passenger_mobile_Number",    "$gender","$passenger_email",color("reset"));
+         }
+print "$tb2",color("reset");
+return "true";
+}
+else
+{ 
+return "not available";
+}
+}
+
+
 }
 

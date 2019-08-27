@@ -63,6 +63,14 @@ $self->{Passenger_Details_from_Id}=$self->{dbh}->prepare(q{select * from Passeng
 $self->{from_Passenger_Details}=$self->{dbh}->prepare(q{select Flight_ID,Flight_Name,Travel_Date,Starting_Place,Destination_Place,Arraival_Time,Departure_Time from Passenger_Details where ID=?});
 $self->{Ticket_Cancel}=$self->{dbh}->prepare(q{Delete from Passenger_Details where ID=?});
 $self->{IDandSeatfrom_Passenger_Details}=$self->{dbh}->prepare(q{select ID, Seat_Availability from Flight_Details where Flight_ID=? and Flight_Name=? and Travel_Date=? and Satrting_Time=? and Destination_Time=? and Travel_Place_ID in (select Travel_Place_ID from Travel_Place_Info where Boarding_From =? and Landing_To=?)});
+$self->{select_All_ID}=$self->{dbh}->prepare(q{select * from Passenger_Details where Login_ID=?});
+$self->{select_Particular_ID}=$self->{dbh}->prepare(q{select Flight_ID,Flight_Name,Travel_Date,Starting_Place,Destination_Place,Arraival_Time,Departure_Time,First_Name,Last_Name,Mobile_Number from Passenger_Details where ID=?});
+$self->{select_Details_ID}=$self->{dbh}->prepare(q{select ID, Seat_Availability from Flight_Details where Flight_ID=? and Flight_Name=? and Travel_Date=? and Satrting_Time=? and Destination_Time=? and Travel_Place_ID in (select Travel_Place_ID from Travel_Place_Info where Boarding_From =? and Landing_To=?)}); 
+$self->{Cancel_Ticket}=$self->{dbh}->prepare(q{Delete from Passenger_Details where ID=?});
+$self->{Reschedule}=$self->{dbh}->prepare(q{select Flight_ID,Flight_Name,Travel_Date,Starting_Place,Destination_Place,Arraival_Time,Departure_Time,First_Name,Last_Name,Mobile_Number from Passenger_Details where ID=?});
+$self->{Reschedule1}=$self->{dbh}->prepare(q{select ID, Seat_Availability from Flight_Details where Flight_ID=? and Flight_Name=? and Travel_Date=? and Satrting_Time=? and Destination_Time=? and Travel_Place_ID in (select Travel_Place_ID from Travel_Place_Info where Boarding_From =? and Landing_To=?)});
+$self->{Reschedule2}=$self->{dbh}->prepare(q{select Id,Seat_Availability,Flight_Name,Arraival_Time,Departure_Time from Flight_Availability where Flight_ID=?});
+$self->{Reschedule3}=$self->{dbh}->prepare(q{select * from Passenger_Details where Travel_Date=? and Starting_Place=? and Destination_Place=? and First_Name=? and Last_Name=? and Mobile_Number=?});
 }
 1;
 
